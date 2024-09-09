@@ -1,0 +1,12 @@
+version: '3'
+services:
+  web:
+    image: web-adota-ai:latest    
+    container_name: web-adota-ai
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: no
+    volumes:
+      - '.:/usr/src/web/'
+    network_mode: host
