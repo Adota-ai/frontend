@@ -2,7 +2,6 @@ import { Button } from "@/components/ui/button";
 import {
 	Card,
 	CardContent,
-	CardDescription,
 	CardFooter,
 	CardHeader,
 	CardTitle,
@@ -11,7 +10,10 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
 export default function LoginForm() {
+
+	
 	return (
+        <div>
 		<div className="flex justify-center items-center h-screen w-screen bg-zinc-800">
 			<Card className="w-full max-w-sm h-[50%]">
 				<CardHeader>
@@ -23,19 +25,24 @@ export default function LoginForm() {
 						<Input
 							id="email"
 							type="email"
-							placeholder="m@example.com"
+							placeholder="gmail@example.com"
 							required
 						/>
 					</div>
 					<div className="grid gap-4">
 						<Label htmlFor="password">Password</Label>
-						<Input id="password" type="password" required />
+						<Input id="password"
+						 type="password" 
+						 placeholder="Password"
+						 required />
+						
 					</div>
 				</CardContent>
 				<CardFooter>
 					<Button className="w-full">Sign in</Button>
 				</CardFooter>
 			</Card>
+		</div>
 		</div>
 	);
 }
