@@ -1,6 +1,7 @@
 import React from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Display from "./components/layout/display";
+import CadastroAnimais from "./pages/CadastroAnimais/CadastroAnimais";
 
 const Login = React.lazy(() => import("@/pages/login"));
 
@@ -19,6 +20,7 @@ function App() {
 				
 				<Route path="/dashboard" element={<Dashboard/>} />
 				<Route path="/cadastro" element={<Cadastro/>} />
+				<Route path="/CadastroAnimais" element={<CadastroAnimais/>} />
 			</Routes>
 		</BrowserRouter>
 	);
