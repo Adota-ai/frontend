@@ -26,8 +26,11 @@ export default function LoginForm() {
 				email,
 				password,
 			}),
+			
+			
+			
 		});
-
+		
 		if(response.ok) {
 			const data = await response.json();
 

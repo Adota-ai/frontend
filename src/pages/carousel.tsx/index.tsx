@@ -19,7 +19,7 @@ export default  function CarouselSize() {
   
   return (
     
-    <div className="container bg-gray-300 mt-8 ml-20 flex  w-[100%] w screen h screen b-10">
+    <div className=" bg-gray-300  flex w-screen h-screen ">
     
     <div className="flex flex-col w-full">
     

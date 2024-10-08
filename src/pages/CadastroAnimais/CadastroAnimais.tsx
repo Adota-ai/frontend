@@ -17,6 +17,7 @@ export default function AnimalRegistrationForm() {
   const [age, setAge] = useState<number | "">("");
   const [gender, setGender] = useState("");
   const [description, setDescription] = useState("");
+  const [cep, setCep] = useState<number | "">("");
 
 
   
@@ -28,9 +29,11 @@ export default function AnimalRegistrationForm() {
     }
   };
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    
+    const CepResponse = await fetch (`viacep.com.br/ws/${cep}/json/`);
+    console.log(CepResponse);
     const formData = {
       name,
       breed,
@@ -38,6 +41,7 @@ export default function AnimalRegistrationForm() {
       gender,
       description,
       images,
+    
     };
     
     // Processar os dados do formulário (por exemplo, enviar para uma API)
@@ -146,6 +150,19 @@ export default function AnimalRegistrationForm() {
                 />
               ))}
             </div>
+          </div>
+
+          <div className="grid gap-2">
+            <Label htmlFor="cep">cep</Label>
+            <Input
+              id="cep"
+              placeholder="cep"
+              type="number"
+              required
+              value={cep}
+              onChange={(e) => setCep(Number(e.target.value) || "")}
+              className="w-full"
+            />
           </div>
 
           {/* Botão de Cadastro */}
