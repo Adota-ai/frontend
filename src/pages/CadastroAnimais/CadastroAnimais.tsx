@@ -18,6 +18,7 @@ export default function AnimalRegistrationForm() {
   const [gender, setGender] = useState("");
   const [description, setDescription] = useState("");
   const [cep, setCep] = useState<number | "">("");
+  const [numero, setNumero] = useState<number | "">("");
 
 
   
@@ -25,7 +26,7 @@ export default function AnimalRegistrationForm() {
   const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files) {
       const filesArray = Array.from(event.target.files);
-      setImages((prevImages) => [...prevImages, ...filesArray]); // Adiciona as novas imagens ao estado
+      setImages((prevImages) => [...prevImages, ...filesArray]); 
     }
   };
 
@@ -44,12 +45,13 @@ export default function AnimalRegistrationForm() {
     
     };
     
-    // Processar os dados do formulário (por exemplo, enviar para uma API)
+   
     console.log("Formulário enviado:", formData);
   };
 
   return (
-    <Card className="w-full max-w-xl mx-auto mt-10 p-6 h-auto">
+  <div className=" w-[100%] h-[50%]">
+    <Card className="  ">
   <CardHeader>
     <CardTitle className="text-xl text-left">Cadastro de Animais</CardTitle>
     <CardDescription>
@@ -58,7 +60,7 @@ export default function AnimalRegistrationForm() {
   </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="grid gap-4">
-          {/* Nome do Animal */}
+         
           <div className="grid gap-2">
             <Label htmlFor="nome">Nome do Animal</Label>
             <Input
@@ -71,7 +73,7 @@ export default function AnimalRegistrationForm() {
             />
           </div>
 
-          {/* Raça do Animal */}
+         
           <div className="grid gap-2">
             <Label htmlFor="raca">Raça</Label>
             <Input
@@ -84,7 +86,6 @@ export default function AnimalRegistrationForm() {
             />
           </div>
 
-          {/* Idade do Animal */}
           <div className="grid gap-2">
             <Label htmlFor="idade">Idade</Label>
             <Input
@@ -98,8 +99,7 @@ export default function AnimalRegistrationForm() {
             />
           </div>
 
-          {/* Gênero do Animal */}
-          <div className="grid gap-2">
+          <div className="grid gap-2 ">
             <Label htmlFor="genero">Gênero</Label>
             <select
               id="genero"
@@ -114,7 +114,7 @@ export default function AnimalRegistrationForm() {
             </select>
           </div>
 
-          {/* Descrição do Animal */}
+        
           <div className="grid gap-2">
             <Label htmlFor="descricao">Descrição</Label>
             <textarea
@@ -123,23 +123,23 @@ export default function AnimalRegistrationForm() {
               required
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              className="w-full h-24 border rounded-md p-2" // Aumenta a altura da caixa de descrição
+              className="w-full h-24 border rounded-md p-2" 
             />
           </div>
 
-          {/* Upload das Imagens */}
+          
           <div className="grid gap-2">
             <Label htmlFor="imagem">Imagens do Animal</Label>
             <Input
               id="imagem"
               type="file"
               accept="image/*"
-              multiple // Permite selecionar múltiplas imagens
+              multiple 
               onChange={handleImageChange}
               required
               className="w-full"
             />
-            {/* Exibir prévia das imagens */}
+            
             <div className="mt-2 grid grid-cols-2 gap-2">
               {images.map((img, index) => (
                 <img
@@ -165,16 +165,27 @@ export default function AnimalRegistrationForm() {
             />
           </div>
 
-          {/* Botão de Cadastro */}
+          <div className="grid gap-2">
+            <Label htmlFor="NumCasa">Numero Da Casa</Label>
+            <Input
+              id="NumCasa"
+              placeholder="Numero da Casa"
+              type="number"
+              required
+              value={numero}
+              onChange={(e) => setNumero(Number(e.target.value) || "")}
+              className="w-full"
+            />
+          </div>
+
+         
           <Button type="submit" className="w-full mt-4">
             Criar Cadastro
           </Button>
         </form>
 
-        <div className="mt-4 text-center text-sm">
-          Já tem um cadastro?{" "}
-        </div>
       </CardContent>
     </Card>
+    </div>
   );
 }

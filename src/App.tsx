@@ -7,6 +7,9 @@ const Login = React.lazy(() => import("@/pages/login"));
 
 const Dashboard = React.lazy(() => import("@/pages/carousel.tsx"));
 const Cadastro = React.lazy(() => import("@/pages/cadastro/cadastro"));
+const Adocao = React.lazy(() => import("@/pages/Adocao/adocao"));
+ 
+
 
 
 function App() {
@@ -17,6 +20,7 @@ function App() {
 					<Route path="teste" element={<Login />} />
 					<Route path="/dashboard" element={<Dashboard/>} />
 					<Route path="/CadastroAnimais" element={<CadastroAnimais/>} />
+					<Route path="/adocao/:id" element={<Adocao/>} />
 				</Route>
 				<Route path="/login" element={<Login />} />
 				<Route path="/cadastro" element={<Cadastro/>} />
