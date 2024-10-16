@@ -27,6 +27,7 @@ const AdoptionForm = () => {
 
     setError('');
     alert('Formulário enviado com sucesso!');
+    window.location.href = '/adocao/:id';
   };
 
   const validateCpf = (cpf: string) => {
@@ -115,6 +116,7 @@ const AdoptionForm = () => {
         {error && <p className="error-message">{error}</p>}
 
         <button type="submit" className="submit-button">Enviar</button>
+        
       </form>
     </div>
   );
