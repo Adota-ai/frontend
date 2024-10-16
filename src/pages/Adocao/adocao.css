@@ -50,15 +50,24 @@
   }
   
   .adopt-button {
-    margin-top: 20px;
-    padding: 10px 20px;
-    background-color: #28a745;
+    background-color: #4CAF50;
     color: white;
     border: none;
-    border-radius: 8px;
-    font-size: 1.2rem;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 10px 2px;
     cursor: pointer;
     transition: background-color 0.3s ease;
+  }
+  
+  .adopt-button:disabled,
+  .adopt-button.pending {
+    background-color: rgb(177, 177, 44);
+    color: white;
+    cursor: not-allowed;
   }
   
   .adopt-button:hover {

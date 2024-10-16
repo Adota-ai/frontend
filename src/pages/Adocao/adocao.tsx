@@ -131,14 +131,9 @@ const animalsData = [
           <p><strong>Descrição:</strong> {animal.description}</p>
           <p><strong>Status:</strong> {animal.status}</p>
   
-          {/* Desabilita o botão se o status for "pendente" */}
-          {animal.status === 'disponivel' ? (
-            <button className="adopt-button" onClick={handleAdopt}>
-              Adotar
-            </button>
-          ) : (
-            <p>Este animal está em processo de adoção.</p>
-          )}
+          <button className={`adopt-button ${animal.status === 'pendente' ? 'pending' : ''}`} onClick={handleAdopt} disabled={animal.status === 'pendente'}>
+            {animal.status === 'pendente' ? 'Adoção Pendente' : 'Adotar'}
+          </button>
         </div>
   
         {isModalOpen && (
@@ -159,12 +154,10 @@ const animalsData = [
                 <label htmlFor="description">Descrição sobre os animais que já teve</label>
                 <textarea id="description" name="description" rows={4} required placeholder="Escreva aqui..."></textarea>
   
-                {animal.status === 'disponivel' ? (
+                
                   <button type="submit">Enviar</button>
             
-          ) : (
-            <p>Este animal está em processo de adoção.</p>
-          )}
+    
               </form>
             </div>
           </div>
