@@ -8,6 +8,8 @@ const Login = React.lazy(() => import("@/pages/login"));
 const Dashboard = React.lazy(() => import("@/pages/carousel.tsx"));
 const Cadastro = React.lazy(() => import("@/pages/cadastro/cadastro"));
 const Adocao = React.lazy(() => import("@/pages/Adocao/adocao"));
+const Formulario = React.lazy(() => import("@/pages/FormsAdoção/formAdoção"));
+
  
 
 
@@ -24,6 +26,7 @@ function App() {
 				</Route>
 				<Route path="/login" element={<Login />} />
 				<Route path="/cadastro" element={<Cadastro/>} />
+				<Route path="/formulario" element={<Formulario />} />
 			</Routes>
 		</BrowserRouter>
 	);

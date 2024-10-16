@@ -1,6 +1,6 @@
 import { useParams } from 'react-router-dom';
 import { useState, useEffect } from 'react';
-
+import './adocao.css';
 const animalsData = [
     {
       id: 1,
@@ -69,6 +69,7 @@ const animalsData = [
     image: String;
   }
   
+  
   const AnimalPage = () => {
     const { id } = useParams() ; 
     const [animal, setAnimal] = useState<Animal |undefined>(undefined);
@@ -87,16 +88,21 @@ const animalsData = [
     if (loading) return <p>Carregando...</p>;
     if (!animal) return <p>Animal não encontrado.</p>;
   
+  
     return (
-      <div>
+      <div className="animal-page">
+      <div className="animal-card">
+        <img className="animal-image" src={`data:image/jpeg;base64,${animal.image}`} alt={animal.name} />
         <h1>{animal.name}</h1>
-        <p>Espécie: {animal.species}</p>
-        <p>Idade: {animal.age} anos</p>
-        <p>Descrição: {animal.description}</p>
-        <img src={`data:image/jpeg;base64,${animal.image}`} />
+        <p><strong>Espécie:</strong> {animal.species}</p>
+        <p><strong>Idade:</strong> {animal.age} anos</p>
+        <p><strong>Descrição:</strong> {animal.description}</p>
+        <button className="adopt-button" >Adotar</button>
       </div>
+    </div>
     );
   };
+
   
   
   /*
@@ -139,6 +145,6 @@ const animalsData = [
   );
 }
   */
-
+  
 export default AnimalPage;
 
