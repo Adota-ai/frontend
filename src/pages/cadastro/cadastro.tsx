@@ -78,13 +78,13 @@ export default function LoginForm() {
             />
           </div>
           <div className="grid gap-2">
-            <Label htmlFor="password">Senha</Label>
-            <Input id="password" name="password" type="password" placeholder="Senha" />
-          </div>
-          <div className="grid gap-2">
-            <Label htmlFor="password">Confirme a Senha</Label>
-            <Input id="password" type="password" placeholder="Senha" />
-          </div>
+    <Label htmlFor="password">Senha</Label>
+    <Input id="password" name="password" type="password" placeholder="Senha" required />
+</div>
+<div className="grid gap-2">
+    <Label htmlFor="confirm-password">Confirme a Senha</Label>
+    <Input id="confirm-password" name="confirm_password" type="password" placeholder="Confirme a Senha" required />
+</div>
           <Button type="submit" className="w-full">
             Create an account
           </Button>
