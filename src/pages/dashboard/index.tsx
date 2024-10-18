@@ -43,7 +43,7 @@ export default function Dashboard() {
 											<NavLink to={`/pet/${animal.id}`}>
 												<img
 													className="object-cover"
-													src={`data:image/jpeg;base64,${animal.image}`}
+													src={animal.image}
 													alt={animal.name}
 												/>
 											</NavLink>

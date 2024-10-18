@@ -1,191 +1,252 @@
 import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+
 import { Button } from "@/components/ui/button";
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
+	Card,
+	CardContent,
+	CardDescription,
+	CardHeader,
+	CardTitle,
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import {
+	Form,
+	FormControl,
+	FormField,
+	FormItem,
+	FormLabel,
+	FormMessage,
+} from "@/components/ui/form";
+import { convertFileToBase64 } from "@/lib/utils";
+
+const FormSchema = z.object({
+	name: z
+		.string()
+		.min(2, { message: "Nome deve ter pelo menos 2 caracteres." }),
+	species: z
+		.string()
+		.min(2, { message: "Raça deve ter pelo menos 2 caracteres." }),
+	age: z
+		.string({ invalid_type_error: "Idade deve ser um número." })
+		.min(0, { message: "Idade deve ser maior ou igual a 0." }),
+	gender: z.enum(["macho", "femea"], { message: "Selecione o gênero." }),
+	description: z
+		.string()
+		.min(5, { message: "Descrição deve ter pelo menos 5 caracteres." }),
+	images: z
+		.array(z.instanceof(File), { message: "Envie pelo menos uma imagem." })
+		.nonempty({ message: "Envie pelo menos uma imagem." }),
+});
 
 export default function AnimalRegistrationForm() {
-  const [images, setImages] = useState<File[]>([]);
-  const [name, setName] = useState("");
-  const [breed, setBreed] = useState("");
-  const [age, setAge] = useState<number | "">("");
-  const [gender, setGender] = useState("");
-  const [description, setDescription] = useState("");
-  const [cep, setCep] = useState<number | "">("");
-  const [numero, setNumero] = useState<number | "">("");
+	const [previewImages, setPreviewImages] = useState<string[]>([]);
 
+	const form = useForm<z.infer<typeof FormSchema>>({
+		resolver: zodResolver(FormSchema),
+		defaultValues: {
+			name: "",
+			species: "",
+			age: "1",
+			description: "",
+			images: [],
+		},
+	});
 
-  
+	const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+		const files = event.target.files;
+		if (files) {
+			const filesArray = Array.from(files);
+			const previewArray = filesArray.map((file) => URL.createObjectURL(file));
+			setPreviewImages(previewArray);
+			form.setValue("images", filesArray);
+		}
+	};
 
-  const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (event.target.files) {
-      const filesArray = Array.from(event.target.files);
-      setImages((prevImages) => [...prevImages, ...filesArray]); 
-    }
-  };
+	async function onSubmit(data: z.infer<typeof FormSchema>) {
+		const base64String = (await convertFileToBase64(data.images[0])) as string;
 
+		const animalsData = JSON.parse(
+			localStorage.getItem("pets") as string,
+		) as Animal[];
 
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    const CepResponse = await fetch (`viacep.com.br/ws/${cep}/json/`);
-    console.log(CepResponse);
-    const formData = {
-      name,
-      breed,
-      age,
-      gender,
-      description,
-      images,
-    
-    };
-    
-   
-    console.log("Formulário enviado:", formData);
-  };
+		interface Animal {
+			id: number;
+			name: string;
+			species: string;
+			age: number;
+			description: string;
+			image: string;
+			status: string;
+		}
 
-  return (
-  <div className=" w-[100%] h-[50%]">
-    <Card className="  ">
-  <CardHeader>
-    <CardTitle className="text-xl text-left">Cadastro de Animais</CardTitle>
-    <CardDescription>
-      Entre com as informações do animal para fazer o cadastro!
-    </CardDescription>
-  </CardHeader>
-      <CardContent>
-        <form onSubmit={handleSubmit} className="grid gap-4">
-         
-          <div className="grid gap-2">
-            <Label htmlFor="nome">Nome do Animal</Label>
-            <Input
-              id="nome"
-              placeholder="Rex"
-              required
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              className="w-full"
-            />
-          </div>
+		animalsData.push({
+			id: animalsData[animalsData.length - 1].id + 1,
+			name: data.name,
+			age: Number.parseInt(data.age),
+			species: data.species,
+			description: data.description,
+			image: base64String,
+			status: "disponivel",
+		});
 
-         
-          <div className="grid gap-2">
-            <Label htmlFor="raca">Raça</Label>
-            <Input
-              id="raca"
-              placeholder="Labrador"
-              required
-              value={breed}
-              onChange={(e) => setBreed(e.target.value)}
-              className="w-full"
-            />
-          </div>
+		console.log(animalsData);
 
-          <div className="grid gap-2">
-            <Label htmlFor="idade">Idade</Label>
-            <Input
-              id="idade"
-              placeholder="3"
-              type="number"
-              required
-              value={age}
-              onChange={(e) => setAge(Number(e.target.value) || "")}
-              className="w-full"
-            />
-          </div>
+		localStorage.setItem("pets", JSON.stringify(animalsData));
+	}
 
-          <div className="grid gap-2 ">
-            <Label htmlFor="genero">Gênero</Label>
-            <select
-              id="genero"
-              className="border rounded-md p-2 w-full"
-              required
-              value={gender}
-              onChange={(e) => setGender(e.target.value)}
-            >
-              <option value="">Selecione o gênero</option>
-              <option value="macho">Macho</option>
-              <option value="femea">Fêmea</option>
-            </select>
-          </div>
+	return (
+		<div className=" flex justify-center w-full h-full p-4">
+			<Card className="shadow-lg h-full w-[80%]">
+				<CardHeader>
+					<CardTitle className="text-2xl font-semibold text-left">
+						Cadastro de Animais
+					</CardTitle>
+					<CardDescription>
+						Entre com as informações do animal para fazer o cadastro!
+					</CardDescription>
+				</CardHeader>
+				<CardContent className="flex grow">
+					<Form {...form}>
+						<form
+							onSubmit={form.handleSubmit(onSubmit)}
+							className="space-y-6 w-full flex flex-col"
+						>
+							<div className="grid grid-cols-2 md:grid-cols-2 gap-6">
+								{/* Nome */}
+								<FormField
+									control={form.control}
+									name="name"
+									render={({ field }) => (
+										<FormItem>
+											<FormLabel>Nome do Animal</FormLabel>
+											<FormControl>
+												<Input placeholder="Rex" {...field} />
+											</FormControl>
+											<FormMessage />
+										</FormItem>
+									)}
+								/>
 
-        
-          <div className="grid gap-2">
-            <Label htmlFor="descricao">Descrição</Label>
-            <textarea
-              id="descricao"
-              placeholder="Um cão brincalhão e amigável"
-              required
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              className="w-full h-24 border rounded-md p-2" 
-            />
-          </div>
+								{/* Raça */}
+								<FormField
+									control={form.control}
+									name="species"
+									render={({ field }) => (
+										<FormItem>
+											<FormLabel>Raça</FormLabel>
+											<FormControl>
+												<Input placeholder="Labrador" {...field} />
+											</FormControl>
+											<FormMessage />
+										</FormItem>
+									)}
+								/>
+							</div>
 
-          
-          <div className="grid gap-2">
-            <Label htmlFor="imagem">Imagens do Animal</Label>
-            <Input
-              id="imagem"
-              type="file"
-              accept="image/*"
-              multiple 
-              onChange={handleImageChange}
-              required
-              className="w-full"
-            />
-            
-            <div className="mt-2 grid grid-cols-2 gap-2">
-              {images.map((img, index) => (
-                <img
-                  key={index}
-                  src={URL.createObjectURL(img)}
-                  alt={`Prévia da imagem ${index + 1}`}
-                  className="w-full h-auto rounded-md"
-                />
-              ))}
-            </div>
-          </div>
+							<div className="grid grid-cols-2 md:grid-cols-2 gap-6">
+								{/* Idade */}
+								<FormField
+									control={form.control}
+									name="age"
+									render={({ field }) => (
+										<FormItem>
+											<FormLabel>Idade</FormLabel>
+											<FormControl>
+												<Input type="number" placeholder="3" {...field} />
+											</FormControl>
+											<FormMessage />
+										</FormItem>
+									)}
+								/>
 
-          <div className="grid gap-2">
-            <Label htmlFor="cep">cep</Label>
-            <Input
-              id="cep"
-              placeholder="cep"
-              type="number"
-              required
-              value={cep}
-              onChange={(e) => setCep(Number(e.target.value) || "")}
-              className="w-full"
-            />
-          </div>
+								{/* Gênero */}
+								<FormField
+									control={form.control}
+									name="gender"
+									render={({ field }) => (
+										<FormItem>
+											<FormLabel>Gênero</FormLabel>
+											<FormControl>
+												<select
+													{...field}
+													className="border rounded-md p-2 w-full"
+												>
+													<option value="">Selecione o gênero</option>
+													<option value="macho">Macho</option>
+													<option value="femea">Fêmea</option>
+												</select>
+											</FormControl>
+											<FormMessage />
+										</FormItem>
+									)}
+								/>
+							</div>
 
-          <div className="grid gap-2">
-            <Label htmlFor="NumCasa">Numero Da Casa</Label>
-            <Input
-              id="NumCasa"
-              placeholder="Numero da Casa"
-              type="number"
-              required
-              value={numero}
-              onChange={(e) => setNumero(Number(e.target.value) || "")}
-              className="w-full"
-            />
-          </div>
+							<div className="grid grid-cols-2 md:grid-cols-2 gap-6 h-36">
+								{/* Descrição */}
+								<FormField
+									control={form.control}
+									name="description"
+									render={({ field }) => (
+										<FormItem>
+											<FormLabel>Descrição</FormLabel>
+											<FormControl>
+												<textarea
+													placeholder="Um cão brincalhão e amigável"
+													{...field}
+													className="w-full h-32  border rounded-md p-2"
+												/>
+											</FormControl>
+											<FormMessage />
+										</FormItem>
+									)}
+								/>
+								{/* Imagens */}
+								<div className="h-32">
+									<FormField
+										control={form.control}
+										name="images"
+										render={({ field }) => (
+											<FormItem>
+												<FormLabel>Imagens do Animal</FormLabel>
+												<FormControl>
+													<Input
+														type="file"
+														accept="image/*"
+														multiple
+														onChange={handleImageChange}
+													/>
+												</FormControl>
+												<FormMessage />
+												<div className="mt-4 grid grid-cols-2 gap-4">
+													{previewImages.map((img, index) => (
+														<img
+															// biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
+															key={index}
+															src={img}
+															alt={`Prévia da imagem ${index + 1}`}
+															className="w-16 h-16  object-cover rounded-md"
+														/>
+													))}
+												</div>
+											</FormItem>
+										)}
+									/>
+								</div>
+							</div>
 
-         
-          <Button type="submit" className="w-full mt-4">
-            Criar Cadastro
-          </Button>
-        </form>
-
-      </CardContent>
-    </Card>
-    </div>
-  );
+							<div className="flex justify-center">
+								<Button type="submit" className="w-full md:w-1/2 mt-4">
+									Criar Cadastro
+								</Button>
+							</div>
+						</form>
+					</Form>
+				</CardContent>
+			</Card>
+		</div>
+	);
 }
