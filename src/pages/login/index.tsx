@@ -1,70 +1,106 @@
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+
+import { toast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
+
 import {
-	Card,
-	CardContent,
-	CardFooter,
-	CardHeader,
-	CardTitle,
-} from "@/components/ui/card";
+	Form,
+	FormControl,
+	FormField,
+	FormItem,
+	FormLabel,
+	FormMessage,
+} from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { FormEvent } from 'react';
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { login } from "@/lib/auth";
+import { useNavigate } from "react-router-dom";
 
+const FormSchema = z.object({
+	user: z.string().min(2, {
+		message: "Nome de usuario deve ter pelo menos 2 caracters.",
+	}),
+	pass: z.string().min(2, {
+		message: "Senha deve ter pelo menos 2 caracters.",
+	}),
+});
 export default function LoginForm() {
-	const handleLogin = async(event: FormEvent<HTMLFormElement>)=> {
-		event.preventDefault();
+	const navigate = useNavigate();
+	const form = useForm<z.infer<typeof FormSchema>>({
+		resolver: zodResolver(FormSchema),
+		defaultValues: {
+			user: "",
+			pass: "",
+		},
+	});
 
-		const email = (event.currentTarget as any).email.value;
-        const password = (event.currentTarget as any).password.value;
-
-		const response = await fetch('http://127.0.0.1:8000/login', {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json',
-			},
-			body: JSON.stringify({
-				email,
-				password,
-			}),
-			
-			
-			
-		});
-		
-		if(response.ok) {
-			const data = await response.json();
-
-			console.log('Login feito com sucesso', data);
-			window.location.href = '/home';
+	function onSubmit(data: z.infer<typeof FormSchema>) {
+		const log = login(data);
+		if (log) {
+			toast({
+				title: "Login efetuado com sucesso",
+			});
+			navigate("/");
 		} else {
-			alert('Login falhou. Verifique suas credenciais.');
+			toast({
+				variant: "destructive",
+				title: "Falha!",
+				description: "Login ou senha incorretos",
+			});
 		}
 	}
-	
+
 	return (
-        <div>
-            <div className="flex justify-center items-center h-screen w-screen bg-zinc-800">
-                <Card className="w-full max-w-sm h-[50%]">
-                    <CardHeader>
-                        <CardTitle className="text-4xl">Login</CardTitle>
-                    </CardHeader>
-                    <form onSubmit={handleLogin}>
-                        <CardContent className="grid gap-4">
-                            <div className="grid gap-4">
-                                <Label htmlFor="email">Email</Label>
-                                <Input id="email" type="email" placeholder="gmail@example.com" required />
-                            </div>
-                            <div className="grid gap-4">
-                                <Label htmlFor="password">Password</Label>
-                                <Input id="password" type="password" placeholder="Password" required />
-                            </div>
-                        </CardContent>
-                        <CardFooter>
-                            <Button type="submit" className="w-full">Sign in</Button>
-                        </CardFooter>
-                    </form>
-                </Card>
-            </div>
-        </div>
+		<>
+			<div className="flex justify-center items-center h-screen w-screen bg-zinc-900">
+				<Card className="w-[40%] h-[60%]">
+					<CardHeader>
+						<CardTitle className="text-4xl">Login</CardTitle>
+					</CardHeader>
+					<CardContent>
+						<Form {...form}>
+							<form
+								onSubmit={form.handleSubmit(onSubmit)}
+								className=" space-y-6"
+							>
+								<FormField
+									control={form.control}
+									name="user"
+									render={({ field }) => (
+										<FormItem>
+											<FormLabel>
+												Nome de usuario: <FormMessage />
+											</FormLabel>
+											<FormControl>
+												<Input placeholder="ong" {...field} />
+											</FormControl>
+										</FormItem>
+									)}
+								/>
+								<FormField
+									control={form.control}
+									name="pass"
+									render={({ field }) => (
+										<FormItem>
+											<FormLabel>
+												Senha: <FormMessage />
+											</FormLabel>
+											<FormControl>
+												<Input placeholder="..." {...field} />
+											</FormControl>
+										</FormItem>
+									)}
+								/>
+								<div className="flex justify-center">
+									<Button type="submit">Login</Button>
+								</div>
+							</form>
+						</Form>
+					</CardContent>
+				</Card>
+			</div>
+		</>
 	);
 }
