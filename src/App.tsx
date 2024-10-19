@@ -9,7 +9,7 @@ const Login = React.lazy(() => import("@/pages/login"));
 const Dashboard = React.lazy(() => import("@/pages/dashboard"));
 const Cadastro = React.lazy(() => import("@/pages/cadastro/cadastro"));
 const Adocao = React.lazy(() => import("@/pages/animal/"));
-const Formulario = React.lazy(() => import("@/pages/FormsAdoção/formAdoção"));
+// const Formulario = React.lazy(() => import("@/pages/FormsAdoção/formAdoção"));
 
 function App() {
 	return (
@@ -23,7 +23,7 @@ function App() {
 					</Route>
 					<Route path="/login" element={<Login />} />
 					<Route path="/cadastro" element={<Cadastro />} />
-					<Route path="/formulario" element={<Formulario />} />
+					{/* <Route path="/formulario" element={<Formulario />} /> */}
 				</Routes>
 			</BrowserRouter>
 		</ToastProvider>

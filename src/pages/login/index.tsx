@@ -74,7 +74,7 @@ export default function LoginForm() {
                         Nome de usuario: <FormMessage />
                       </FormLabel>
                       <FormControl>
-                        <Input placeholder="ong" {...field} />
+                        <Input type="email" placeholder="E-mail" {...field} />
                       </FormControl>
                     </FormItem>
                   )}
@@ -88,7 +88,7 @@ export default function LoginForm() {
                         Senha: <FormMessage />
                       </FormLabel>
                       <FormControl>
-                        <Input placeholder="..." {...field} />
+                        <Input type="password" placeholder="Digite sua senha" {...field} />
                       </FormControl>
                     </FormItem>
                   )}
